@@ -12,7 +12,9 @@
  */
 var fs = require('fs');
 var path = require('path');
-var moment = require('moment');
+var dayjs = require("dayjs");
+var utc = require('dayjs/plugin/utc');
+dayjs.extend(utc);
 var crypto = require('crypto');
 
 var EventEmitter = require('events');
@@ -31,7 +33,7 @@ var EventEmitter = require('events');
  *
  *   - `verbose`        If set, it will log to STDOUT when it rotates files and name of log file. Default is TRUE.
  *
- *   - `date_format`    Format as used in moment.js http://momentjs.com/docs/#/displaying/format/. The result is used to replace
+ *   - `date_format`    Format as used in day.js https://day.js.org/docs/en/display/format. The result is used to replace
  *                      the '%DATE%' placeholder in the filename.
  *                      If using 'custom' frequency, it is used to trigger file change when the string representation changes.
  *
@@ -172,24 +174,24 @@ FileStreamRotator.parseFileSize = function (size) {
  */
 FileStreamRotator.getDate = function (format, date_format, utc) {
     date_format = date_format || DATE_FORMAT;
-    let currentMoment = utc ? moment.utc() : moment().local()
+    let currentDayjs = utc ? dayjs.utc() : dayjs.utc().local()
     if (format && staticFrequency.indexOf(format.type) !== -1) {
         switch (format.type) {
             case 'm':
-                var minute = Math.floor(currentMoment.minutes() / format.digit) * format.digit;
-                return currentMoment.minutes(minute).format(date_format);
+                var minute = Math.floor(currentDayjs.minute() / format.digit) * format.digit;
+                return currentDayjs.minute(minute).format(date_format);
                 break;
             case 'h':
-                var hour = Math.floor(currentMoment.hour() / format.digit) * format.digit;
-                return currentMoment.hour(hour).format(date_format);
+                var hour = Math.floor(currentDayjs.hour() / format.digit) * format.digit;
+                return currentDayjs.hour(hour).format(date_format);
                 break;
             case 'daily':
             case 'custom':
             case 'test':
-                return currentMoment.format(date_format);
+                return currentDayjs.format(date_format);
         }
     }
-    return currentMoment.format(date_format);
+    return currentDayjs.format(date_format);
 }
 
 /**
@@ -378,7 +380,7 @@ FileStreamRotator.addLogToAudit = function(logfile, audit, stream, verbose){
         });
 
         if(audit.keep.days){
-            var oldestDate = moment().subtract(audit.keep.amount,"days").valueOf();
+            var oldestDate = dayjs().subtract(audit.keep.amount,"days").valueOf();
             var recentFiles = audit.files.filter(function(file){
                 if(file.date > oldestDate){
                     return true;
@@ -453,7 +455,7 @@ FileStreamRotator.getStream = function (options) {
         if(!options.date_format){
             dateFormat = "YYYY-MM-DD";
         }
-        if(moment().format(dateFormat) != moment().endOf("day").format(dateFormat) || moment().format(dateFormat) == moment().add(1,"day").format(dateFormat)){
+        if(dayjs().format(dateFormat) != dayjs().endOf("day").format(dateFormat) || dayjs().format(dateFormat) == dayjs().add(1,"day").format(dateFormat)){
             if(self.verbose){
                 console.log(new Date(),"[FileStreamRotator] Changing type to custom as date format changes more often than once a day or not every day");
             }

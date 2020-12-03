@@ -20,7 +20,7 @@ npm install file-stream-rotator
  - *frequency*:      How often to rotate. Options are 'daily', 'custom' and 'test'. 'test' rotates every minute.
                      If frequency is set to none of the above, a YYYYMMDD string will be added to the end of the filename.
  - *verbose*:        If set, it will log to STDOUT when it rotates files and name of log file. Default is TRUE.
- - *date_format*:    Format as used in moment.js http://momentjs.com/docs/#/displaying/format/. The result is used to replace
+ - *date_format*:    Format as used in day.js https://day.js.org/docs/en/display/format. The result is used to replace
                      the '%DATE%' placeholder in the filename.
                      If using 'custom' frequency, it is used to trigger file rotation when the string representation changes.
  - *size*:           Max size of the file after which it will rotate. It can be combined with frequency or date format.
@@ -49,16 +49,16 @@ npm install file-stream-rotator
     // Default date added using file pattern
     var rotatingLogStream = require('file-stream-rotator').getStream({filename:"/tmp/test-%DATE%.log", frequency:"daily", verbose: false});
  
-    // Custom date added using file pattern using moment.js formats
+    // Custom date added using file pattern using dayjs.js formats
     var rotatingLogStream = require('file-stream-rotator').getStream({filename:"/tmp/test-%DATE%.log", frequency:"daily", verbose: false, date_format: "YYYY-MM-DD"});
  
-    // Rotate when the date format as calculated by momentjs is different (e.g monthly)
+    // Rotate when the date format as calculated by day.js is different (e.g monthly)
     var rotatingLogStream = require('file-stream-rotator').getStream({filename:"/tmp/test-%DATE%.log", frequency:"custom", verbose: false, date_format: "YYYY-MM"});
  
-    // Rotate when the date format as calculated by momentjs is different (e.g weekly)
+    // Rotate when the date format as calculated by day.js is different (e.g weekly)
     var rotatingLogStream = require('file-stream-rotator').getStream({filename:"/tmp/test-%DATE%.log", frequency:"custom", verbose: false, date_format: "YYYY-ww"});
  
-    // Rotate when the date format as calculated by momentjs is different (e.g AM/PM)
+    // Rotate when the date format as calculated by day.js is different (e.g AM/PM)
     var rotatingLogStream = require('file-stream-rotator').getStream({filename:"/tmp/test-%DATE%.log", frequency:"custom", verbose: false, date_format: "YYYY-MM-DD-A"});
  
     // Rotate on given minutes using the 'm' option i.e. 5m or 30m

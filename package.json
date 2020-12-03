@@ -25,6 +25,6 @@
     "author": "Roger Castells",
     "license": "MIT",
     "dependencies": {
-        "moment": "^2.11.2"
+        "dayjs": "^1.9.6"
     }
 }
